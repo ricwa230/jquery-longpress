@@ -15,7 +15,7 @@
  */
 
 (function($) {
-    $.fn.longpress = function(longCallback, shortCallback, duration) {
+    $.fn.longpress = function(selector, longCallback, shortCallback, duration) {
         if (typeof duration === "undefined") {
             duration = 500;
         }
@@ -29,6 +29,7 @@
 
             // mousedown or touchstart callback
             function mousedown_callback(e) {
+                clearTimeout(timeout);
                 mouse_down_time = new Date().getTime();
                 var context = $(this);
 
@@ -66,14 +67,14 @@
             }
 
             // Browser Support
-            $this.on('mousedown', mousedown_callback);
-            $this.on('mouseup', mouseup_callback);
-            $this.on('mousemove', move_callback);
+            $this.on('mousedown', selector, mousedown_callback);
+            $this.on('mouseup', selector, mouseup_callback);
+            $this.on('mousemove', selector, move_callback);
 
             // Mobile Support
-            $this.on('touchstart', mousedown_callback);
-            $this.on('touchend', mouseup_callback);
-            $this.on('touchmove', move_callback);
+            $this.on('touchstart', selector, mousedown_callback);
+            $this.on('touchend', selector, mouseup_callback);
+            $this.on('touchmove', selector, move_callback);
         });
     };
 }(jQuery));
