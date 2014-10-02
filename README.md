@@ -18,19 +18,19 @@ take a look at [longpress.js][lp] that is also written by me.
 
 ```js
 
-$('#button').longpress(function() {
+$('#button').longpress({longCallback: function() {
     // longpress callback
     alert('You just longpress-ed a button.');
-});
+}});
 
 ```
 
 ### Detailed Usage
 
-**.longpress(longpressHandler(event)[, shortpressHandler(event), duration])**
+**.longpress({longCallback: longpressHandler(event)[, shortCallback: shortpressHandler(event), duration: duration, selector: selector]})**
 <table>
     <tr>
-        <td>longpressHandler(event)</td>
+        <td>longCallback(event)</td>
         <td>Required</td>
         <td>
             Type: Function()  
@@ -38,7 +38,7 @@ $('#button').longpress(function() {
         </td>
     </tr>
     <tr>
-        <td>shortpressHandler(event)</td>
+        <td>shortCallback(event)</td>
         <td>Optional</td>
         <td>
             Type: Function()
@@ -53,15 +53,26 @@ $('#button').longpress(function() {
             longpress duration in milliseconds.
         </td>
     </tr>
+    <tr>
+        <td>selector</td>
+        <td>Optional</td>
+        <td>
+            Type: String
+            A selector to be used to bind longpress to dynamically added objects. E.g. `$(document).longpress({selector: '.longpress', … });`
+        </td>
+    </tr>
 </table>
 
 **Example:**
 
 ```js
-$('#button').longpress(function(e) {
-    alert('You just longpressed something.');
-}, function(e) {
-    alert('You released before longpress duration and that\'s why its a shortpress now.');
+$('#button').longpress({
+    longCallback: function(e) {
+        alert('You just longpressed something.');
+    }, 
+    shortCallback: function(e) {
+        alert('You released before longpress duration and that\'s why its a shortpress now.');
+    }
 });
 ```
 

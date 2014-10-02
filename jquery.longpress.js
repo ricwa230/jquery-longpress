@@ -15,10 +15,13 @@
  */
 
 (function($) {
-    $.fn.longpress = function(selector, longCallback, shortCallback, duration) {
-        if (typeof duration === "undefined") {
-            duration = 500;
-        }
+    $.fn.longpress = function(options) {
+        var options = $.extend({
+            duration: 500,
+            selector: null,
+            longCallback: function () {return true;},
+            shortCallback: function () {return true;}
+        }, options);
 
         return this.each(function() {
             var $this = $(this);
@@ -35,25 +38,25 @@
 
                 // set a timeout to call the longpress callback when time elapses
                 timeout = setTimeout(function() {
-                    if (typeof longCallback === "function") {
-                        longCallback.call(context, e);
+                    if (typeof options.longCallback === "function") {
+                        options.longCallback.call(context, e);
                     } else {
-                        $.error('Callback required for long press. You provided: ' + typeof longCallback);
+                        $.error('Callback required for long press. You provided: ' + typeof options.longCallback);
                     }
-                }, duration);
+                }, options.duration);
             }
 
             // mouseup or touchend callback
             function mouseup_callback(e) {
                 var press_time = new Date().getTime() - mouse_down_time;
-                if (press_time < duration) {
+                if (press_time < options.duration) {
                     // cancel the timeout
                     clearTimeout(timeout);
 
                     // call the shortCallback if provided
-                    if (typeof shortCallback === "function") {
-                        shortCallback.call($(this), e);
-                    } else if (typeof shortCallback === "undefined") {
+                    if (typeof options.shortCallback === "function") {
+                        options.shortCallback.call($(this), e);
+                    } else if (typeof options.shortCallback === "undefined") {
                         ;
                     } else {
                         $.error('Optional callback for short press should be a function.');
@@ -67,14 +70,14 @@
             }
 
             // Browser Support
-            $this.on('mousedown', selector, mousedown_callback);
-            $this.on('mouseup', selector, mouseup_callback);
-            $this.on('mousemove', selector, move_callback);
+            $this.on('mousedown', options.selector, mousedown_callback);
+            $this.on('mouseup', options.selector, mouseup_callback);
+            $this.on('mousemove', options.selector, move_callback);
 
             // Mobile Support
-            $this.on('touchstart', selector, mousedown_callback);
-            $this.on('touchend', selector, mouseup_callback);
-            $this.on('touchmove', selector, move_callback);
+            $this.on('touchstart', options.selector, mousedown_callback);
+            $this.on('touchend', options.selector, mouseup_callback);
+            $this.on('touchmove', options.selector, move_callback);
         });
     };
 }(jQuery));
